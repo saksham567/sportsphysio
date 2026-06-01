@@ -1,0 +1,33 @@
+{% extends "staff/base_staff.html" %}
+{% block staff_title %}Payments{% endblock %}
+{% block staff_content %}
+<div class="portal-header">
+  <h1>Payments</h1>
+  <p>Verify UPI payments and create patient logins automatically.</p>
+</div>
+
+<div class="filter-tabs">
+  <a href="?status=pending" class="filter-tab {% if current_status == 'pending' %}active{% endif %}">Pending</a>
+  <a href="?status=verified" class="filter-tab {% if current_status == 'verified' %}active{% endif %}">Verified</a>
+  <a href="?status=rejected" class="filter-tab {% if current_status == 'rejected' %}active{% endif %}">Rejected</a>
+  <a href="?status=all" class="filter-tab {% if current_status == 'all' %}active{% endif %}">All</a>
+</div>
+
+<table class="data-table">
+  <thead><tr><th>Patient</th><th>Plan</th><th>Amount</th><th>Status</th><th>Date</th><th></th></tr></thead>
+  <tbody>
+    {% for p in payments %}
+    <tr>
+      <td>{{ p.contact_name }}<br><small class="text-muted">{{ p.contact_email }}</small></td>
+      <td>{{ p.plan_label }}</td>
+      <td>₹{{ p.amount_inr }}</td>
+      <td><span class="badge badge-{{ p.status }}">{{ p.get_status_display }}</span></td>
+      <td>{{ p.created_at|date:"d M Y" }}</td>
+      <td><a href="{% url 'staff:payment_detail' p.id %}">Open</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6" class="empty-state">No payments found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

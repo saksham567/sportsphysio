@@ -1,0 +1,32 @@
+{% extends "staff/base_staff.html" %}
+{% block staff_title %}Rehab Programs{% endblock %}
+{% block staff_content %}
+<div class="portal-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;">
+  <div>
+    <h1>Rehab Programs</h1>
+    <p>Manage week-by-week progress for monthly rehab patients.</p>
+  </div>
+  <form method="post" action="{% url 'staff:advance_weeks' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-teal">Auto-advance weeks (7-day check)</button>
+  </form>
+</div>
+
+<table class="data-table">
+  <thead><tr><th>Patient</th><th>Program</th><th>Status</th><th>Current Week</th><th>Started</th><th></th></tr></thead>
+  <tbody>
+    {% for prog in programs %}
+    <tr>
+      <td>{{ prog.patient.display_name }}</td>
+      <td>{{ prog.title }}</td>
+      <td><span class="badge badge-{{ prog.status }}">{{ prog.get_status_display }}</span></td>
+      <td>Week {{ prog.current_week_number }}</td>
+      <td>{{ prog.start_date|date:"d M Y" }}</td>
+      <td><a href="{% url 'staff:program_detail' prog.id %}">Manage</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6" class="empty-state">No programs yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

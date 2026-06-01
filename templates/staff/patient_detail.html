@@ -1,0 +1,68 @@
+{% extends "staff/base_staff.html" %}
+{% block staff_title %}{{ patient.display_name }}{% endblock %}
+{% block staff_content %}
+<div class="portal-header">
+  <h1>{{ patient.display_name }}</h1>
+  <p>{{ patient.email }} · {{ patient.phone|default:"No phone" }}</p>
+</div>
+
+<div style="display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+  <a href="{% url 'staff:program_create' patient.id %}" class="btn btn-primary">+ New Rehab Program</a>
+  <a href="{% url 'staff:add_consultation' patient.id %}" class="btn" style="background:var(--g50);color:var(--g800);">+ Add Consultation</a>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+  <div>
+    <h2 class="section-heading">Profile</h2>
+    <div class="form-card" style="max-width:none;margin:0;">
+      <p><strong>Concern:</strong> {{ profile.primary_concern|default:"—" }}</p>
+      <p><strong>Injury history:</strong> {{ profile.injury_history|default:"—" }}</p>
+      <p><strong>Staff notes:</strong> {{ profile.notes|default:"—" }}</p>
+    </div>
+
+    <h2 class="section-heading" style="margin-top:1.5rem;">Rehab Programs</h2>
+    {% for prog in programs %}
+    <div class="progress-card">
+      <h3>{{ prog.title }}</h3>
+      <p class="text-muted">{{ prog.get_status_display }} · Week {{ prog.current_week_number }}</p>
+      <a href="{% url 'staff:program_detail' prog.id %}">Manage →</a>
+    </div>
+    {% empty %}
+    <p class="text-muted">No programs yet.</p>
+    {% endfor %}
+  </div>
+
+  <div>
+    <h2 class="section-heading">Recent Payments</h2>
+    <table class="data-table" style="margin-bottom:1.5rem;">
+      <thead><tr><th>Plan</th><th>₹</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for pay in payments %}
+        <tr>
+          <td>{{ pay.plan_label }}</td>
+          <td>{{ pay.amount_inr }}</td>
+          <td><span class="badge badge-{{ pay.status }}">{{ pay.get_status_display }}</span></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3" class="empty-state">None</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h2 class="section-heading">Bookings</h2>
+    <table class="data-table">
+      <thead><tr><th>When</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for b in bookings %}
+        <tr>
+          <td>{% if b.scheduled_at %}{{ b.scheduled_at|date:"d M Y, H:i" }}{% else %}—{% endif %}</td>
+          <td>{{ b.get_status_display }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="2" class="empty-state">None</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+Hi {{ patient_name }}! Your payment is confirmed ✅
+
+Login to your patient portal: {{ login_url }}
+Email: {{ email }}
+{% if temporary_password %}Temp password: {{ temporary_password }}{% endif %}
+
+— Dr. Aahana Gupta (PT)

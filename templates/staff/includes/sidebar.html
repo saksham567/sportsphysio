@@ -1,0 +1,28 @@
+<aside class="portal-sidebar staff-sidebar">
+  <div style="padding:0 1rem 1rem;font-size:0.72rem;font-weight:700;color:var(--t600);letter-spacing:0.1em;text-transform:uppercase;">
+    Staff Dashboard
+  </div>
+  <nav>
+    <a href="{% url 'staff:dashboard' %}" {% if request.resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>
+      <i class="ti ti-layout-dashboard"></i> Overview
+    </a>
+    <a href="{% url 'staff:payments' %}" {% if 'payment' in request.resolver_match.url_name %}class="active"{% endif %}>
+      <i class="ti ti-credit-card"></i> Payments
+    </a>
+    <a href="{% url 'staff:bookings' %}" {% if request.resolver_match.url_name == 'bookings' %}class="active"{% endif %}>
+      <i class="ti ti-calendar"></i> Bookings
+    </a>
+    <a href="{% url 'staff:patients' %}" {% if 'patient' in request.resolver_match.url_name %}class="active"{% endif %}>
+      <i class="ti ti-users"></i> Patients
+    </a>
+    <a href="{% url 'staff:programs' %}" {% if 'program' in request.resolver_match.url_name %}class="active"{% endif %}>
+      <i class="ti ti-heart-rate-monitor"></i> Rehab Programs
+    </a>
+    <a href="{% url 'staff:notifications' %}" {% if request.resolver_match.url_name == 'notifications' %}class="active"{% endif %}>
+      <i class="ti ti-bell"></i> Notifications
+    </a>
+    <a href="{% url 'website:home' %}">
+      <i class="ti ti-world"></i> Public Site
+    </a>
+  </nav>
+</aside>

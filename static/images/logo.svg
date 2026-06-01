@@ -1,0 +1,6 @@
+"""SVG logo mark  physiotherapy / sports rehab."""
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" role="img" aria-label="Dr. Aahana Gupta logo">
+  <rect width="48" height="48" rx="12" fill="#185FA5"/>
+  <path d="M24 8v32M14 18h20M14 18l5-6M34 18l-5-6" stroke="#5DCAA5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="24" cy="28" r="6" stroke="#fff" stroke-width="2" fill="none"/>
+</svg>

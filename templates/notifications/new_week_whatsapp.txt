@@ -1,0 +1,7 @@
+Hi {{ patient_name }}! Week {{ week_number }} of your rehab program is ready 💪
+
+{{ week_title }}: {{ summary }}
+
+View in portal: {{ portal_url }}
+
+— Dr. Aahana Gupta (PT)

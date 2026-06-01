@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Payment — {{ plan.name }}{% endblock %}
+
+{% block content %}
+<div class="page-hero-mini">
+  <div class="container">
+    <h1>Complete Payment</h1>
+    <p>Pay for your selected plan via UPI, then submit proof for Dr. Aahana to verify.</p>
+  </div>
+</div>
+
+<section class="page-section section-wide">
+  <div class="container">
+    {% include "includes/checkout_steps.html" %}
+
+    <div class="payment-plan-summary">
+      <div class="payment-plan-icon {{ plan.icon_class }}">
+        <i class="ti {{ plan.icon }}"></i>
+      </div>
+      <div>
+        <div class="payment-plan-name">{{ plan.name }}</div>
+        <div class="payment-plan-price">{{ plan.price_display }} <span>{{ plan.per }}</span></div>
+        {% if plan.is_recurring %}
+        <div class="plan-tag-recurring"><i class="ti ti-repeat"></i> Includes weekly check-in calls</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="pay-grid pay-grid-checkout">
+      <div class="qr-card">
+        <div class="qr-label">Scan to Pay — {{ plan.price_display }}</div>
+        <div class="qr-img-wrap">
+          <img src="{% static 'images/upi_qr.jpg' %}" alt="UPI QR code">
+        </div>
+        <div class="upi-box">
+          <div class="upi-box-label">UPI ID</div>
+          <div class="upi-id">{{ UPI_ID }}</div>
+        </div>
+        <button type="button" class="copy-btn" data-copy-upi="{{ UPI_ID }}"><i class="ti ti-copy"></i> Copy UPI ID</button>
+        <div class="apps-row">
+          <div class="app-pill"><span class="app-dot dot-g"></span>GPay</div>
+          <div class="app-pill"><span class="app-dot dot-p"></span>PhonePe</div>
+          <div class="app-pill"><span class="app-dot dot-pt"></span>Paytm</div>
+        </div>
+      </div>
+
+      <div class="form-card payment-form-card">
+        <div class="section-title" style="font-size:1.1rem;margin-bottom:0.5rem;">Submit Payment Proof</div>
+        <p class="section-desc" style="margin-bottom:1rem;">
+          Your submission goes directly to <strong>Dr. Aahana Gupta</strong> for verification and slot finalization.
+          You'll receive portal login details by email and WhatsApp once confirmed.
+        </p>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {% for field in form %}
+          <div class="form-field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<div class="form-error">{{ field.errors }}</div>{% endif %}
+          </div>
+          {% endfor %}
+          <button type="submit" class="btn btn-primary btn-block">Submit to Dr. Aahana for Verification</button>
+        </form>
+        <p class="form-help" style="margin-top:0.75rem;text-align:center;">
+          Already have an account? <a href="{% url 'accounts:login' %}">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

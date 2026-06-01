@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Book a Slot{% endblock %}
+
+{% block extra_head %}
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="page-hero-mini">
+  <div class="container">
+    <h1>{{ plan.booking_heading }}</h1>
+    <p>{{ plan.booking_desc }}</p>
+  </div>
+</div>
+
+<section class="page-section alt section-wide">
+  <div class="container">
+    {% include "includes/checkout_steps.html" %}
+
+    <div class="selected-plan-banner">
+      <i class="ti ti-package"></i>
+      <div>
+        <strong>{{ plan.plan_label }}</strong>
+        {% if plan.is_recurring %}
+        <span class="plan-tag-recurring" style="margin-left:0.5rem;"><i class="ti ti-repeat"></i> Weekly recurring</span>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if plan.is_recurring %}
+    <div class="note-box" style="margin-bottom:1.25rem;">
+      <i class="ti ti-calendar-repeat"></i>
+      <p>
+        <strong>Monthly Rehab:</strong> You're booking your <strong>weekly 1-on-1 check-in call</strong>
+        with Dr. Aahana. This slot repeats every week for the duration of your program.
+        After scheduling, you'll be taken to payment automatically.
+      </p>
+    </div>
+    {% else %}
+    <div class="note-box" style="margin-bottom:1.25rem;">
+      <i class="ti ti-arrow-right"></i>
+      <p>After you confirm your slot, you'll be redirected to <strong>payment</strong> automatically.</p>
+    </div>
+    {% endif %}
+
+    <div class="calendly-wrap">
+      <div class="calendly-inline-widget"
+           id="calendly-embed"
+           data-url="{{ calendly_url }}"
+           style="min-width:320px;height:700px;"></div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+<script>
+(function () {
+  var paymentUrl = "{{ payment_redirect_url|escapejs }}";
+  window.addEventListener("message", function (e) {
+    if (e.origin !== "https://calendly.com") return;
+    if (e.data.event === "calendly.event_scheduled") {
+      window.location.href = paymentUrl;
+    }
+  });
+})();
+</script>
+{% endblock %}

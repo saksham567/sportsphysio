@@ -1,0 +1,22 @@
+# Environment
+.env
+*.sqlite3
+db.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+
+# Django
+staticfiles/
+media/payments/
+
+# IDE
+.idea/
+.vscode/

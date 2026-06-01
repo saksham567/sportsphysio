@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Login{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="container">
+    <div class="form-card">
+      <div class="section-label" style="text-align:center;">Patient Portal</div>
+      <div class="section-title" style="text-align:center;margin-bottom:1.25rem;">Sign In</div>
+      <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <div class="form-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <div class="form-field">
+          <label for="id_username">Email</label>
+          {{ form.username }}
+          {% if form.username.errors %}<div class="form-error">{{ form.username.errors }}</div>{% endif %}
+        </div>
+        <div class="form-field">
+          <label for="id_password">Password</label>
+          {{ form.password }}
+          {% if form.password.errors %}<div class="form-error">{{ form.password.errors }}</div>{% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+      </form>
+      <div class="auth-links">
+        New patient? <a href="{% url 'accounts:register' %}">Create an account</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

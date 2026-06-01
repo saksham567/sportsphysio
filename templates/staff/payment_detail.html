@@ -1,0 +1,49 @@
+{% extends "staff/base_staff.html" %}
+{% block staff_title %}Payment Review{% endblock %}
+{% block staff_content %}
+<div class="portal-header">
+  <h1>Review Payment</h1>
+  <p>₹{{ payment.amount_inr }} — {{ payment.plan_label }}</p>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;">
+  <div class="form-card" style="max-width:none;margin:0;">
+    <h3 style="font-size:1rem;margin-bottom:1rem;color:var(--b900);">Patient Details</h3>
+    <p><strong>Name:</strong> {{ payment.contact_name }}</p>
+    <p><strong>Email:</strong> {{ payment.contact_email|default:"—" }}</p>
+    <p><strong>Phone:</strong> {{ payment.contact_phone|default:"—" }}</p>
+    <p><strong>UPI ref:</strong> {{ payment.upi_transaction_id|default:"—" }}</p>
+    <p><strong>Payment note:</strong> {{ payment.payment_note|default:"—" }}</p>
+    <p><strong>Status:</strong> <span class="badge badge-{{ payment.status }}">{{ payment.get_status_display }}</span></p>
+    {% if payment.screenshot %}
+    <p style="margin-top:1rem;"><strong>Screenshot:</strong></p>
+    <a href="{{ payment.screenshot.url }}" target="_blank">
+      <img src="{{ payment.screenshot.url }}" alt="Payment screenshot" style="max-width:100%;border-radius:8px;border:1px solid var(--b100);">
+    </a>
+    {% endif %}
+  </div>
+
+  <div class="form-card" style="max-width:none;margin:0;">
+    <h3 style="font-size:1rem;margin-bottom:1rem;color:var(--b900);">Actions</h3>
+    {% if payment.status == 'pending' %}
+    <p style="font-size:0.85rem;color:var(--g600);margin-bottom:1rem;">
+      Verifying will <strong>create a patient login</strong> (if new) and email/WhatsApp credentials automatically.
+      Monthly rehab plans also start Week 1.
+    </p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.admin_notes.label_tag }}
+      {{ form.admin_notes }}
+      <div style="display:flex;gap:0.5rem;margin-top:1rem;flex-wrap:wrap;">
+        <button type="submit" name="action" value="verify" class="btn btn-teal">✓ Verify Payment</button>
+        <button type="submit" name="action" value="reject" class="btn" style="background:#fde8e8;color:#9b1c1c;">Reject</button>
+      </div>
+    </form>
+    {% else %}
+    <p>Verified on {{ payment.verified_at|date:"d M Y, H:i"|default:"—" }}</p>
+    {% if payment.admin_notes %}<p><strong>Notes:</strong> {{ payment.admin_notes }}</p>{% endif %}
+    {% endif %}
+    <a href="{% url 'staff:payments' %}" style="display:inline-block;margin-top:1rem;font-size:0.85rem;">← Back to payments</a>
+  </div>
+</div>
+{% endblock %}

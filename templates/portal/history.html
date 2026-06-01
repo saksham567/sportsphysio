@@ -1,0 +1,52 @@
+{% extends "portal/base_portal.html" %}
+
+{% block portal_content %}
+<div class="portal-header">
+  <h1>Session History</h1>
+  <p>Your consultation records and booking history.</p>
+</div>
+
+<h2 style="font-size:1rem;color:var(--b900);margin-bottom:0.75rem;">Consultations</h2>
+{% if consultations %}
+<table class="data-table" style="margin-bottom:2rem;">
+  <thead><tr><th>Type</th><th>Date</th><th>Complaint</th><th>Follow-up</th></tr></thead>
+  <tbody>
+    {% for c in consultations %}
+    <tr>
+      <td>{{ c.get_session_type_display }}</td>
+      <td>{{ c.session_date|date:"d M Y, H:i" }}</td>
+      <td>{{ c.chief_complaint|default:"—" }}</td>
+      <td>{% if c.follow_up_required %}Yes{% else %}—{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty-state" style="margin-bottom:2rem;">
+  <i class="ti ti-stethoscope"></i>
+  No consultation records yet.
+</div>
+{% endif %}
+
+<h2 style="font-size:1rem;color:var(--b900);margin-bottom:0.75rem;">Bookings</h2>
+{% if bookings %}
+<table class="data-table">
+  <thead><tr><th>Plan</th><th>Scheduled</th><th>Status</th><th>Requested</th></tr></thead>
+  <tbody>
+    {% for b in bookings %}
+    <tr>
+      <td>{{ b.plan_label|default:"—" }}</td>
+      <td>{% if b.scheduled_at %}{{ b.scheduled_at|date:"d M Y, H:i" }}{% else %}—{% endif %}</td>
+      <td><span class="badge badge-{{ b.status }}">{{ b.get_status_display }}</span></td>
+      <td>{{ b.created_at|date:"d M Y" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty-state">
+  <i class="ti ti-calendar"></i>
+  No bookings yet. <a href="{% url 'website:plans' %}">Book a session</a>
+</div>
+{% endif %}
+{% endblock %}

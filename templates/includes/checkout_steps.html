@@ -1,0 +1,16 @@
+<nav class="checkout-steps" aria-label="Booking progress">
+  <a href="{% url 'website:plans' %}" class="checkout-step {% if flow_step >= 1 %}done{% endif %} {% if flow_step == 1 %}current{% endif %}">
+    <span class="step-dot">1</span>
+    <span class="step-label">Choose plan</span>
+  </a>
+  <span class="checkout-step-line"></span>
+  <a href="{% if plan %}{% url 'website:book' %}?plan={{ plan.slug }}{% else %}#{% endif %}" class="checkout-step {% if flow_step >= 2 %}done{% endif %} {% if flow_step == 2 %}current{% endif %}">
+    <span class="step-dot">2</span>
+    <span class="step-label">Book slot</span>
+  </a>
+  <span class="checkout-step-line"></span>
+  <span class="checkout-step {% if flow_step >= 3 %}done{% endif %} {% if flow_step == 3 %}current{% endif %}">
+    <span class="step-dot">3</span>
+    <span class="step-label">Pay &amp; submit</span>
+  </span>
+</nav>

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="container">
+    <div class="form-card">
+      <div class="section-label" style="text-align:center;">Patient Portal</div>
+      <div class="section-title" style="text-align:center;margin-bottom:0.5rem;">Create Account</div>
+      <p class="section-desc" style="text-align:center;margin-bottom:1.25rem;">Register to track payments, rehab progress, and consultation history.</p>
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<div class="form-help">{{ field.help_text }}</div>{% endif %}
+          {% if field.errors %}<div class="form-error">{{ field.errors }}</div>{% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+      </form>
+      <div class="auth-links">
+        Already registered? <a href="{% url 'accounts:login' %}">Sign in</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

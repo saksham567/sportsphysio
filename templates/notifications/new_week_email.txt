@@ -1,0 +1,10 @@
+Hi {{ patient_name }},
+
+Week {{ week_number }} of your rehab program is ready: {{ week_title }}
+
+{{ summary }}
+
+View exercises and log your notes in the patient portal:
+{{ portal_url }}
+
+— Dr. Aahana Gupta (PT)

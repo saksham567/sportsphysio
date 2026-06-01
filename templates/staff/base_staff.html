@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Staff — {% block staff_title %}Dashboard{% endblock %}{% endblock %}
+
+{% block content %}
+<div class="portal-layout staff-layout">
+  {% include "staff/includes/sidebar.html" %}
+  <div class="portal-main">
+    {% block staff_content %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

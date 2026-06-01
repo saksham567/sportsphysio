@@ -1,0 +1,24 @@
+{% extends "staff/base_staff.html" %}
+{% block staff_title %}Notifications{% endblock %}
+{% block staff_content %}
+<div class="portal-header">
+  <h1>Notification Log</h1>
+  <p>Email and WhatsApp messages sent to patients.</p>
+</div>
+<table class="data-table">
+  <thead><tr><th>When</th><th>Channel</th><th>Recipient</th><th>Subject</th><th>Sent</th></tr></thead>
+  <tbody>
+    {% for log in logs %}
+    <tr>
+      <td>{{ log.created_at|date:"d M Y, H:i" }}</td>
+      <td>{{ log.get_channel_display }}</td>
+      <td>{{ log.recipient_email|default:log.recipient_phone }}</td>
+      <td>{{ log.subject|default:"—" }}</td>
+      <td>{% if log.success %}✓{% else %}✗{% endif %}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5" class="empty-state">No notifications yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

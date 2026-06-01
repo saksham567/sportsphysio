@@ -1,0 +1,33 @@
+{% extends "staff/base_staff.html" %}
+{% block staff_title %}Bookings{% endblock %}
+{% block staff_content %}
+<div class="portal-header">
+  <h1>Bookings</h1>
+  <p>Sessions auto-created from Calendly webhooks.</p>
+</div>
+
+<div class="filter-tabs">
+  <a href="?status=confirmed" class="filter-tab {% if current_status == 'confirmed' %}active{% endif %}">Confirmed</a>
+  <a href="?status=requested" class="filter-tab {% if current_status == 'requested' %}active{% endif %}">Requested</a>
+  <a href="?status=cancelled" class="filter-tab {% if current_status == 'cancelled' %}active{% endif %}">Cancelled</a>
+  <a href="?status=all" class="filter-tab {% if current_status == 'all' %}active{% endif %}">All</a>
+</div>
+
+<table class="data-table">
+  <thead><tr><th>Name</th><th>Email</th><th>Scheduled</th><th>Plan</th><th>Status</th><th>Source</th></tr></thead>
+  <tbody>
+    {% for b in bookings %}
+    <tr>
+      <td>{{ b.contact_name }}</td>
+      <td>{{ b.contact_email|default:"—" }}</td>
+      <td>{% if b.scheduled_at %}{{ b.scheduled_at|date:"d M Y, H:i" }}{% else %}—{% endif %}</td>
+      <td>{{ b.plan_label|default:"—" }}</td>
+      <td><span class="badge badge-{{ b.status }}">{{ b.get_status_display }}</span></td>
+      <td>{% if b.calendly_invitee_uri %}Calendly{% else %}Manual{% endif %}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6" class="empty-state">No bookings yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

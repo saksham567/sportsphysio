@@ -1,0 +1,45 @@
+{% extends "staff/base_staff.html" %}
+{% block staff_title %}{{ program.title }}{% endblock %}
+{% block staff_content %}
+<div class="portal-header">
+  <h1>{{ program.title }}</h1>
+  <p>{{ program.patient.display_name }} · {{ program.get_status_display }}</p>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;">
+  <div>
+    <h2 class="section-heading">Progress Weeks</h2>
+    {% for entry in entries %}
+    <div class="progress-week">
+      <h4>Week {{ entry.week_number }} — {{ entry.title }}</h4>
+      <p>{{ entry.summary }}</p>
+      {% if entry.clinician_notes %}<p><em>Clinician: {{ entry.clinician_notes }}</em></p>{% endif %}
+    </div>
+    {% empty %}
+    <p class="text-muted">No weeks yet.</p>
+    {% endfor %}
+
+    <form method="post" style="margin-top:1.25rem;padding:1rem;background:var(--b50);border-radius:8px;">
+      {% csrf_token %}
+      <h3 style="font-size:0.9rem;margin-bottom:0.75rem;">Quick add next week</h3>
+      <textarea name="week_summary" class="form-control" rows="3" placeholder="Week summary for patient…"></textarea>
+      <input type="hidden" name="exercises_total" value="5">
+      <button type="submit" name="add_week" value="1" class="btn btn-teal" style="margin-top:0.75rem;">Add Week {{ program.current_week_number|add:1 }} &amp; notify patient</button>
+    </form>
+  </div>
+
+  <div class="form-card" style="max-width:none;margin:0;">
+    <h3 style="font-size:1rem;margin-bottom:1rem;">Add / edit week (detailed)</h3>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-field">
+        <label>{{ field.label }}</label>
+        {{ field }}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary">Save entry</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

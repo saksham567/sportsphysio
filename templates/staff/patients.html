@@ -1,0 +1,30 @@
+{% extends "staff/base_staff.html" %}
+{% block staff_title %}Patients{% endblock %}
+{% block staff_content %}
+<div class="portal-header">
+  <h1>Patients</h1>
+  <p>All registered patients and portal accounts.</p>
+</div>
+
+<form method="get" style="margin-bottom:1.25rem;display:flex;gap:0.5rem;">
+  <input type="search" name="q" value="{{ query }}" placeholder="Search name, email, phone…" class="form-control" style="max-width:320px;">
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<table class="data-table">
+  <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Active</th><th></th></tr></thead>
+  <tbody>
+    {% for p in patients %}
+    <tr>
+      <td>{{ p.display_name }}</td>
+      <td>{{ p.email }}</td>
+      <td>{{ p.phone|default:"—" }}</td>
+      <td>{% if p.is_active %}Yes{% else %}No{% endif %}</td>
+      <td><a href="{% url 'staff:patient_detail' p.id %}">View</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5" class="empty-state">No patients found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

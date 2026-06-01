@@ -1,0 +1,63 @@
+{% extends "staff/base_staff.html" %}
+{% block staff_title %}Overview{% endblock %}
+{% block staff_content %}
+<div class="portal-header">
+  <h1>Practice Overview</h1>
+  <p>Welcome back — here's what needs your attention today.</p>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card stat-card-alert">
+    <div class="stat-card-label">Pending Payments</div>
+    <div class="stat-card-value">{{ pending_count }}</div>
+    {% if pending_count %}<a href="{% url 'staff:payments' %}" style="font-size:0.78rem;">Review now →</a>{% endif %}
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-label">Active Programs</div>
+    <div class="stat-card-value">{{ active_programs|length }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-label">Total Patients</div>
+    <div class="stat-card-value">{{ patient_count }}</div>
+  </div>
+</div>
+
+<h2 style="font-size:1rem;color:var(--b900);margin-bottom:0.75rem;">Pending Payments</h2>
+{% if pending_payments %}
+<table class="data-table" style="margin-bottom:2rem;">
+  <thead><tr><th>Patient</th><th>Plan</th><th>Amount</th><th>Date</th><th></th></tr></thead>
+  <tbody>
+    {% for p in pending_payments %}
+    <tr>
+      <td>{{ p.contact_name }}<br><small style="color:var(--g400);">{{ p.contact_email }}</small></td>
+      <td>{{ p.plan_label }}</td>
+      <td>₹{{ p.amount_inr }}</td>
+      <td>{{ p.created_at|date:"d M Y" }}</td>
+      <td><a href="{% url 'staff:payment_detail' p.id %}" class="btn btn-primary" style="padding:0.35rem 0.75rem;font-size:0.78rem;">Review</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty-state" style="padding:1rem;">No pending payments 🎉</p>
+{% endif %}
+
+<h2 style="font-size:1rem;color:var(--b900);margin-bottom:0.75rem;">Upcoming Bookings (Calendly)</h2>
+{% if upcoming_bookings %}
+<table class="data-table">
+  <thead><tr><th>Patient</th><th>When</th><th>Plan</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for b in upcoming_bookings %}
+    <tr>
+      <td>{{ b.contact_name }}<br><small style="color:var(--g400);">{{ b.contact_email }}</small></td>
+      <td>{% if b.scheduled_at %}{{ b.scheduled_at|date:"d M Y, H:i" }}{% else %}—{% endif %}</td>
+      <td>{{ b.plan_label|default:"—" }}</td>
+      <td><span class="badge badge-{{ b.status }}">{{ b.get_status_display }}</span></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty-state" style="padding:1rem;">No upcoming bookings.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="container">
+    <div class="form-card" style="max-width:560px;">
+      <div class="section-title" style="margin-bottom:1.25rem;">Your Profile</div>
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<div class="form-error">{{ field.errors }}</div>{% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Save Profile</button>
+        <a href="{% url 'portal:dashboard' %}" class="btn" style="margin-left:0.5rem;background:var(--g50);color:var(--g800);">Cancel</a>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

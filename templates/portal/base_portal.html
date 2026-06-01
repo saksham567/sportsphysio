@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Portal{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {% include "portal/includes/sidebar.html" %}
+  <div class="portal-main">
+    {% block portal_content %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

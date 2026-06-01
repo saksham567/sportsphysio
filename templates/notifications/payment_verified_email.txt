@@ -1,0 +1,25 @@
+Hi {{ patient_name }},
+
+Great news — your payment has been confirmed by Dr. Aahana Gupta.
+
+Your patient portal is now ready:
+{{ login_url }}
+
+Sign in with your email: {{ email }}
+{% if temporary_password %}
+Temporary password: {{ temporary_password }}
+
+Please change your password after your first login.
+{% else %}
+Use the password you set when you registered.
+{% endif %}
+
+From your portal you can:
+- Track rehab progress week by week
+- View payment and session history
+- Update your profile
+
+Questions? Reply to this email or message on WhatsApp.
+
+— Dr. Aahana Gupta (PT)
+Sports Physiotherapist · GNDU, Amritsar

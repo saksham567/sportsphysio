@@ -1,0 +1,21 @@
+{% extends "staff/base_staff.html" %}
+{% block staff_title %}New Program{% endblock %}
+{% block staff_content %}
+<div class="portal-header">
+  <h1>New Rehab Program</h1>
+  <p>For {{ patient.display_name }}</p>
+</div>
+<div class="form-card" style="max-width:560px;margin:0;">
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="form-field">
+      <label>{{ field.label }}</label>
+      {{ field }}
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Create program &amp; Week 1</button>
+    <a href="{% url 'staff:patient_detail' patient.id %}" style="margin-left:0.5rem;font-size:0.85rem;">Cancel</a>
+  </form>
+</div>
+{% endblock %}

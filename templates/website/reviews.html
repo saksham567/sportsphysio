@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Reviews{% endblock %}
+
+{% block content %}
+<div class="page-hero-mini">
+  <div class="container">
+    <h1>What Patients Say</h1>
+    <p>Real feedback from patients who completed ACL, lower back, and video consultation programs.</p>
+  </div>
+</div>
+
+<section class="page-section">
+  <div class="container">
+    <div class="section-label">Patient Stories</div>
+    <div class="section-title">What Patients Say</div>
+    <div class="rating-bar">
+      <div class="big-r">4.9</div>
+      <div><div class="stars-row">★★★★★</div><div class="stars-sub">Based on patient feedback</div></div>
+    </div>
+    <div class="reviews-grid">
+      {% for rv in reviews %}
+      <div class="rv-card">
+        <div class="rv-stars">{% for i in "12345" %}★{% endfor %}</div>
+        <div class="rv-text">"{{ rv.text }}"</div>
+        <div class="rv-author">
+          <div class="av">{{ rv.initials }}</div>
+          <div><div class="av-name">{{ rv.author }}</div><div class="av-tag">{{ rv.tag }}</div></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="margin-top:2rem;text-align:center;">
+      <a href="{% url 'website:plans' %}" class="btn btn-primary">Book Your Session</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% load static %}
+<nav class="site-nav">
+  <div class="container nav-inner">
+    <a href="{% url 'website:home' %}" class="nav-brand">
+      <img src="{% static 'images/logo.svg' %}" alt="" class="nav-logo" width="44" height="44">
+      <div class="nav-brand-text">
+        <div class="nav-name">Dr. Aahana Gupta (PT)</div>
+        <div class="nav-sub">Sports Physiotherapist · GNDU, Amritsar</div>
+      </div>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Toggle menu">
+      <i class="ti ti-menu-2"></i>
+    </button>
+    <div class="nav-links">
+      <div class="nav-menu">
+        <a href="{% url 'website:services' %}" {% if request.resolver_match.url_name == 'services' %}class="active"{% endif %}>Services</a>
+        <a href="{% url 'website:plans' %}" {% if request.resolver_match.url_name == 'plans' %}class="active"{% endif %}>Plans</a>
+        <a href="{% url 'website:reviews' %}" {% if request.resolver_match.url_name == 'reviews' %}class="active"{% endif %}>Reviews</a>
+      </div>
+      <a href="{% url 'website:plans' %}" class="nav-cta">Book Now</a>
+      <div class="nav-auth">
+        {% if user.is_authenticated %}
+          {% if user.is_superuser or user.role == 'staff' or user.is_staff %}
+          <a href="{% url 'staff:dashboard' %}" class="nav-auth-link"><i class="ti ti-stethoscope"></i> Staff</a>
+          {% endif %}
+          <a href="{% url 'portal:dashboard' %}" class="nav-auth-link"><i class="ti ti-user"></i> Portal</a>
+          <form method="post" action="{% url 'accounts:logout' %}" class="nav-logout-form">
+            {% csrf_token %}
+            <button type="submit" class="nav-logout-btn">Logout</button>
+          </form>
+        {% else %}
+          <a href="{% url 'accounts:login' %}" class="nav-auth-link">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>

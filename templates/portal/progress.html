@@ -1,0 +1,45 @@
+{% extends "portal/base_portal.html" %}
+
+{% block portal_content %}
+<div class="portal-header">
+  <h1>Rehab Progress</h1>
+  <p>Track your week-by-week program progress and add your own notes.</p>
+</div>
+
+{% if programs %}
+{% for program in programs %}
+<div class="progress-card">
+  <h3>{{ program.title }}</h3>
+  <p style="font-size:0.82rem;color:var(--g400);margin-bottom:1rem;">
+    {{ program.get_status_display }} · Started {{ program.start_date|date:"d M Y" }}
+  </p>
+  {% for entry in program.progress_entries.all %}
+  <div class="progress-week">
+    <h4>Week {{ entry.week_number }} — {{ entry.title }}</h4>
+    <p>{{ entry.summary }}</p>
+    {% if entry.completion_percent %}
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" style="width:{{ entry.completion_percent }}%;"></div>
+    </div>
+    <p style="font-size:0.75rem;color:var(--g400);margin-top:0.25rem;">{{ entry.exercises_completed }}/{{ entry.exercises_total }} exercises</p>
+    {% endif %}
+    {% if entry.pain_level is not None %}
+    <p style="font-size:0.78rem;color:var(--g600);margin-top:0.35rem;">Pain level: {{ entry.pain_level }}/10</p>
+    {% endif %}
+    {% if entry.patient_notes %}
+    <p style="font-size:0.78rem;color:var(--g600);margin-top:0.25rem;font-style:italic;">Your note: {{ entry.patient_notes }}</p>
+    {% endif %}
+    <a href="{% url 'portal:progress_update' entry.id %}" style="font-size:0.78rem;display:inline-block;margin-top:0.35rem;">Update your notes →</a>
+  </div>
+  {% empty %}
+  <p style="font-size:0.85rem;color:var(--g400);">Progress entries will appear here once your program begins.</p>
+  {% endfor %}
+</div>
+{% endfor %}
+{% else %}
+<div class="empty-state">
+  <i class="ti ti-chart-line"></i>
+  No rehab programs assigned yet. <a href="{% url 'website:plans' %}">View plans</a> to get started.
+</div>
+{% endif %}
+{% endblock %}

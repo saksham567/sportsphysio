@@ -1,0 +1,56 @@
+{% extends "portal/base_portal.html" %}
+
+{% block portal_content %}
+<div class="portal-header">
+  <h1>Payments</h1>
+  <p>Submit your UPI payment details and track verification status.</p>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;">
+  <div class="form-card" style="max-width:none;margin:0;">
+    <div class="section-title" style="font-size:1.1rem;margin-bottom:1rem;">Submit Payment</div>
+    {% if selected_plan %}
+    <p class="section-desc" style="margin-bottom:1rem;">Submitting for: <strong>{{ selected_plan.plan_label }}</strong></p>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-field">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}<div class="form-help">{{ field.help_text }}</div>{% endif %}
+        {% if field.errors %}<div class="form-error">{{ field.errors }}</div>{% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary btn-block">Submit for Verification</button>
+    </form>
+    <p class="form-help" style="margin-top:0.75rem;text-align:center;">
+      Start a new booking via <a href="{% url 'website:plans' %}">Plans</a>, or submit a renewal payment below.
+    </p>
+  </div>
+
+  <div>
+    <div class="section-title" style="font-size:1.1rem;margin-bottom:1rem;">Payment History</div>
+    {% if payments_list %}
+    <table class="data-table">
+      <thead><tr><th>Plan</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody>
+        {% for payment in payments_list %}
+        <tr>
+          <td>{{ payment.plan_label }}</td>
+          <td>₹{{ payment.amount_inr|floatformat:0 }}</td>
+          <td><span class="badge badge-{{ payment.status }}">{{ payment.get_status_display }}</span></td>
+          <td>{{ payment.created_at|date:"d M Y" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+      <i class="ti ti-receipt"></i>
+      No payment records yet.
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

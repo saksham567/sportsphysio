@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Services{% endblock %}
+
+{% block content %}
+<div class="page-hero-mini">
+  <div class="container">
+    <h1>What I Treat</h1>
+    <p>Evidence-based online rehabilitation for ACL, meniscus, lower back, and sports injuries.</p>
+  </div>
+</div>
+
+<section class="page-section">
+  <div class="container">
+    <div class="section-label">Areas of Expertise</div>
+    <div class="section-title">What I Treat</div>
+    <div class="services-grid">
+      {% for svc in services %}
+      <div class="svc-card">
+        <div class="svc-icon"><i class="ti {{ svc.icon }}"></i></div>
+        <div class="svc-name">{{ svc.name }}</div>
+        <div class="svc-desc">{{ svc.description }}</div>
+        <span class="svc-tag">{{ svc.tag }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="margin-top:2rem;text-align:center;">
+      <a href="{% url 'website:plans' %}" class="btn btn-primary">View Plans &amp; Pricing</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

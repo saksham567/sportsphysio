@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Plans & Pricing{% endblock %}
+
+{% block content %}
+<div class="page-hero-mini">
+  <div class="container">
+    <h1>Choose Your Path</h1>
+    <p>1-on-1 video consultation or a full monthly rehab program with WhatsApp support.</p>
+  </div>
+</div>
+
+<section class="page-section alt section-wide">
+  <div class="container">
+    {% include "includes/checkout_steps.html" %}
+
+    <div class="section-label">Plans &amp; Pricing</div>
+    <div class="section-title">Choose Your Path</div>
+    <p class="section-desc">Select a plan below. You'll book your slot next, then complete UPI payment.</p>
+
+    <div class="plans-grid plans-grid-wide">
+      {% for plan in plans %}
+      <div class="plan-card{% if plan.featured %} featured{% endif %}">
+        {% if plan.badge %}<div class="popular-badge">{{ plan.badge }}</div>{% endif %}
+        <div class="plan-icon {{ plan.icon_class }}"><i class="ti {{ plan.icon }}"></i></div>
+        <div class="plan-name">{{ plan.name }}</div>
+        <div class="plan-price">{{ plan.price_display }}</div>
+        <div class="plan-per">{{ plan.per }}</div>
+        <div class="plan-dur"><i class="ti {{ plan.duration_icon }}"></i> {{ plan.duration }}</div>
+        {% if plan.is_recurring %}
+        <div class="plan-tag-recurring"><i class="ti ti-repeat"></i> Weekly recurring call</div>
+        {% endif %}
+        <ul class="plan-features">
+          {% for icon_type, text in plan.features %}
+          <li><i class="ti ti-{% if icon_type == 'warn' %}alert-circle warn{% else %}check{% endif %}"></i> {{ text }}</li>
+          {% endfor %}
+        </ul>
+        <a href="{% url 'website:book' %}?plan={{ plan.slug }}" class="btn btn-block plan-cta {{ plan.cta_class }}">{{ plan.cta }}</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
