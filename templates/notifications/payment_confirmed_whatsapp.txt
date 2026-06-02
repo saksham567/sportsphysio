@@ -1,0 +1,12 @@
+Hi {{ name }}! ✅
+
+Payment of ₹{{ amount_inr }} confirmed for:
+{{ plan_label }}
+
+{% if scheduled_when %}Session: {{ scheduled_when }}{% endif %}
+
+{% if portal_url %}Patient portal: {{ portal_url }}{% endif %}
+{% if temp_password %}Login email: {{ email }}
+Temp password: {{ temp_password }}{% endif %}
+
+— Dr. Aahana Gupta (PT)

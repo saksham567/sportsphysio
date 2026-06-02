@@ -1,8 +1,8 @@
 from django.utils import timezone
 
-from portal.models import ConsultationHistory, Payment, ServicePlan
+from portal.models import Booking, ConsultationHistory, Payment, ServicePlan
 from portal.services.accounts import get_or_create_patient_from_contact, link_guest_records_to_user
-from portal.services.notifications import notify_payment_verified
+from portal.services.notifications import notify_payment_confirmed_whatsapp
 from portal.services.rehab import create_rehab_program_for_payment
 
 
@@ -38,12 +38,7 @@ def verify_payment(*, payment: Payment, verified_by=None):
 
     link_guest_records_to_user(user)
 
-    if account_created and temp_password and not payment.login_credentials_sent:
-        notify_payment_verified(patient=user, temporary_password=temp_password)
-        payment.login_credentials_sent = True
-        payment.save(update_fields=["login_credentials_sent", "updated_at"])
-    elif account_created is False and not payment.login_credentials_sent:
-        notify_payment_verified(patient=user, temporary_password=None)
+    if not payment.login_credentials_sent:
         payment.login_credentials_sent = True
         payment.save(update_fields=["login_credentials_sent", "updated_at"])
 
@@ -63,9 +58,15 @@ def verify_payment(*, payment: Payment, verified_by=None):
             defaults={
                 "session_type": ConsultationHistory.SessionType.VIDEO,
                 "chief_complaint": payment.plan_label,
-                "assessment_summary": "Video consultation payment verified. Session to be scheduled via Calendly.",
+                "assessment_summary": "Consultation payment confirmed via Razorpay.",
             },
         )
+
+    notify_payment_confirmed_whatsapp(
+        payment=payment,
+        patient=user,
+        temporary_password=temp_password if account_created else None,
+    )
 
     return payment
 

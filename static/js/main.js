@@ -32,8 +32,25 @@
     });
   }
 
+  function initWhatsAppWidget() {
+    var toggle = document.getElementById("wa-widget-toggle");
+    var popup = document.getElementById("wa-popup");
+    var closeBtn = document.getElementById("wa-popup-close");
+    if (!toggle || !popup) return;
+
+    toggle.addEventListener("click", function () {
+      popup.hidden = !popup.hidden;
+    });
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function () {
+        popup.hidden = true;
+      });
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initCopyButtons();
     initMobileNav();
+    initWhatsAppWidget();
   });
 })();

@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from website.content import PLANS
 
-from .forms import PaymentSubmissionForm, ProgressNoteForm
+from .forms import ProgressNoteForm
 from .models import Booking, ConsultationHistory, Payment, ProgressEntry, RehabProgram, ServicePlan
 
 
@@ -39,34 +39,15 @@ def dashboard(request):
 def payments(request):
     user = request.user
     plan_slug = request.GET.get("plan", "")
-    plan_data = next((p for p in PLANS if p["slug"] == plan_slug), None)
-    service_plan = ServicePlan.objects.filter(slug=plan_slug).first() if plan_slug else None
-
-    if request.method == "POST":
-        form = PaymentSubmissionForm(request.POST, request.FILES)
-        if form.is_valid():
-            payment = form.save(commit=False)
-            payment.patient = user
-            payment.plan = service_plan
-            payment.save()
-            messages.success(request, "Payment submitted for verification. Dr. Aahana will confirm within a few hours.")
-            return redirect("portal:payments")
-    else:
-        initial = {}
-        if plan_data:
-            initial = {
-                "plan_label": plan_data["plan_label"],
-                "amount_inr": plan_data["price"],
-            }
-        form = PaymentSubmissionForm(initial=initial)
-
+    if plan_slug:
+        return redirect(
+            reverse("website:payment") + f"?plan={plan_slug}&booked=1&renew=1"
+        )
     return render(
         request,
         "portal/payments.html",
         {
-            "form": form,
             "payments_list": Payment.objects.filter(patient=user),
-            "selected_plan": plan_data,
         },
     )
 

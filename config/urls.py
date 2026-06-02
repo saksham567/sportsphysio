@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
 
-from portal.webhooks import calendly_webhook
+from portal.webhooks import calendly_webhook, razorpay_webhook
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -12,6 +12,7 @@ urlpatterns = [
     path("portal/", include("portal.urls")),
     path("staff/", include("staff.urls")),
     path("webhooks/calendly/", calendly_webhook, name="calendly_webhook"),
+    path("webhooks/razorpay/", razorpay_webhook, name="razorpay_webhook"),
 ]
 
 if settings.DEBUG:

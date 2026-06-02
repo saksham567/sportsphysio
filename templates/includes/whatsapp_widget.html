@@ -1,0 +1,16 @@
+{% if WHATSAPP_URL %}
+<div class="wa-widget" id="wa-widget">
+  <button type="button" class="wa-widget-btn" id="wa-widget-toggle" aria-label="Chat on WhatsApp">
+    <i class="ti ti-brand-whatsapp"></i>
+  </button>
+  <div class="wa-popup" id="wa-popup" hidden>
+    <button type="button" class="wa-popup-close" id="wa-popup-close" aria-label="Close">&times;</button>
+    <div class="wa-popup-icon"><i class="ti ti-brand-whatsapp"></i></div>
+    <h3>Chat with Dr. Aahana</h3>
+    <p>Questions about rehab, pricing, or booking? Message directly on WhatsApp.</p>
+    <a href="{{ WHATSAPP_URL }}" target="_blank" rel="noopener" class="btn btn-teal btn-block">
+      <i class="ti ti-brand-whatsapp"></i> Open WhatsApp
+    </a>
+  </div>
+</div>
+{% endif %}

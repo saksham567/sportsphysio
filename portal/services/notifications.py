@@ -178,24 +178,104 @@ def notify_new_progress_week(*, patient, program, entry):
 
 
 def notify_booking_confirmed(*, patient, booking):
-    when = booking.scheduled_at.strftime("%d %b %Y at %I:%M %p") if booking.scheduled_at else "TBD"
-    subject = "Your session with Dr. Aahana is confirmed"
-    body = (
-        f"Hi {patient.first_name or patient.display_name},\n\n"
-        f"Your appointment is confirmed for {when}.\n\n"
-        f"Please complete UPI payment if you haven't already.\n\n"
-        f"— Dr. Aahana Gupta (PT)"
-    )
-    wa_body = (
-        f"Hi {patient.first_name or patient.display_name}! Your physio session is confirmed "
-        f"for {when}. — Dr. Aahana Gupta (PT)"
-    )
-    return notify_patient(
+    when = booking.scheduled_at.strftime("%d %b %Y at %I:%M %p") if booking.scheduled_at else ""
+    return notify_booking_confirmed_whatsapp(
+        name=patient.first_name or patient.display_name,
+        phone=patient.whatsapp or patient.phone,
+        email=patient.email,
+        plan_label=booking.plan_label or "Session",
+        scheduled_when=when,
+        payment_pending=True,
         patient=patient,
-        subject=subject,
-        email_body=body,
-        whatsapp_body=wa_body,
     )
+
+
+def notify_booking_confirmed_whatsapp(
+    *,
+    name: str,
+    phone: str,
+    email: str = "",
+    plan_label: str,
+    scheduled_when: str = "",
+    payment_pending: bool = True,
+    patient=None,
+):
+    """WhatsApp + email when a Calendly slot is booked (guest or patient)."""
+    payment_url = settings.SITE_URL.rstrip("/") + "/payment/"
+    slug = _plan_slug_from_label(plan_label)
+    payment_url += f"?plan={slug}&booked=1"
+
+    context = {
+        "name": name.split()[0] if name else "there",
+        "plan_label": plan_label,
+        "scheduled_when": scheduled_when,
+        "payment_pending": payment_pending,
+        "payment_url": payment_url,
+    }
+    wa_body = render_to_string("notifications/booking_confirmed_whatsapp.txt", context)
+
+    if phone:
+        send_whatsapp_notification(phone=phone, message=wa_body, patient=patient)
+
+    if email:
+        subject = "Your session with Dr. Aahana is booked"
+        body = (
+            f"Hi {name},\n\n"
+            f"Your appointment is booked"
+            f"{f' for {scheduled_when}' if scheduled_when else ''}.\n\n"
+            f"Plan: {plan_label}\n\n"
+            f"Complete payment: {payment_url}\n\n"
+            f"— Dr. Aahana Gupta (PT)"
+        )
+        send_email_notification(to_email=email, subject=subject, body=body, patient=patient)
+
+    return True
+
+
+def notify_payment_confirmed_whatsapp(*, payment, patient, temporary_password=None):
+    """WhatsApp when Razorpay payment succeeds."""
+    booking = (
+        Booking.objects.filter(guest_email__iexact=payment.contact_email)
+        .order_by("-created_at")
+        .first()
+    )
+    if not booking and payment.patient_id:
+        booking = Booking.objects.filter(patient=payment.patient).order_by("-created_at").first()
+
+    scheduled_when = ""
+    if booking and booking.scheduled_at:
+        scheduled_when = booking.scheduled_at.strftime("%d %b %Y at %I:%M %p")
+
+    context = {
+        "name": (payment.contact_name or "there").split()[0],
+        "amount_inr": payment.amount_inr,
+        "plan_label": payment.plan_label,
+        "scheduled_when": scheduled_when,
+        "portal_url": settings.SITE_URL.rstrip("/") + "/accounts/login/",
+        "email": payment.contact_email,
+        "temp_password": temporary_password or "",
+    }
+    wa_body = render_to_string("notifications/payment_confirmed_whatsapp.txt", context)
+    phone = payment.contact_phone or (patient.whatsapp if patient else "") or (patient.phone if patient else "")
+
+    if phone:
+        send_whatsapp_notification(phone=phone, message=wa_body, patient=patient)
+
+    if payment.contact_email:
+        subject = f"Payment confirmed — {payment.plan_label}"
+        send_email_notification(
+            to_email=payment.contact_email,
+            subject=subject,
+            body=wa_body,
+            patient=patient,
+        )
+
+
+def _plan_slug_from_label(label: str) -> str:
+    lower = label.lower()
+    if "monthly" in lower or "rehab" in lower:
+        return "monthly-rehab"
+    return "video-consultation"
 
 
 def notify_staff_payment_submitted(*, payment):

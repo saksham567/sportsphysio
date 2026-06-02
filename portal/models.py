@@ -118,6 +118,8 @@ class Payment(models.Model):
     amount_inr = models.PositiveIntegerField()
     upi_transaction_id = models.CharField(max_length=120, blank=True)
     payment_note = models.CharField(max_length=255, blank=True)
+    razorpay_order_id = models.CharField(max_length=120, blank=True, db_index=True)
+    razorpay_payment_id = models.CharField(max_length=120, blank=True)
     screenshot = models.ImageField(upload_to="payments/%Y/%m/", blank=True)
     status = models.CharField(
         max_length=20,

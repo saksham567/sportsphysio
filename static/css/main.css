@@ -1210,7 +1210,83 @@ a:hover { color: var(--b800); }
 
 .stat-card-alert { border-color: #f0c674; background: #fffdf5; }
 
-.staff-sidebar { background: linear-gradient(180deg, var(--white), var(--b50)); }
+/* WhatsApp floating widget */
+.wa-widget {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9000;
+}
+
+.wa-widget-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: #25d366;
+  color: white;
+  font-size: 1.75rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.wa-widget-btn:hover { transform: scale(1.06); }
+
+.wa-popup {
+  position: absolute;
+  bottom: 68px;
+  right: 0;
+  width: 280px;
+  background: white;
+  border: 1px solid var(--b100);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.wa-popup[hidden] { display: none; }
+
+.wa-popup-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.65rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--g400);
+  cursor: pointer;
+}
+
+.wa-popup-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #e8f9ef;
+  color: #25d366;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem;
+}
+
+.wa-popup h3 {
+  font-size: 1rem;
+  color: var(--b900);
+  margin-bottom: 0.35rem;
+}
+
+.wa-popup p {
+  font-size: 0.82rem;
+  color: var(--g400);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
 
 /* ── Toast & messages ── */
 .toast {

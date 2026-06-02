@@ -1,5 +1,4 @@
 # Optional: deploy to Render.com (https://render.com)
-# Netlify does NOT support Django — use Render, Railway, or Fly.io instead.
 
 services:
   - type: web
@@ -20,10 +19,20 @@ services:
         fromDatabase:
           name: sportsphysio-db
           property: connectionString
-      - key: CALENDLY_WEBHOOK_SIGNING_KEY
-        sync: false
       - key: EMAIL_BACKEND
-        value: django.core.mail.backends.smtp.EmailBackend
+        value: django.core.mail.backends.console.EmailBackend
+      - key: CONTACT_EMAIL
+        value: aahanaguptaphysio@gmail.com
+      - key: UPI_ID
+        value: aahanagupta1791@oksbi
+      - key: CALENDLY_URL
+        value: https://calendly.com/shoyokageyamaa640?hide_gdpr_banner=1&primary_color=185FA5
+      - key: CALENDLY_REHAB_URL
+        value: https://calendly.com/shoyokageyamaa640?hide_gdpr_banner=1&primary_color=0F6E56
+      - key: WHATSAPP_NUMBER
+        value: "919675191210"
+      - key: WHATSAPP_PREFILL_MESSAGE
+        value: Hi Dr. Aahana, I'd like to know more about your physiotherapy services.
 
 databases:
   - name: sportsphysio-db

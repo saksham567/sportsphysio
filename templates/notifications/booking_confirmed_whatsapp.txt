@@ -1,0 +1,13 @@
+Hi {{ name }}! ✅
+
+Your session with Dr. Aahana Gupta is booked{% if scheduled_when %} for {{ scheduled_when }}{% endif %}.
+
+Plan: {{ plan_label }}
+
+{% if payment_pending %}
+Complete payment here: {{ payment_url }}
+{% else %}
+Payment received. See you soon!
+{% endif %}
+
+— Dr. Aahana Gupta (PT) · Sports Physiotherapist

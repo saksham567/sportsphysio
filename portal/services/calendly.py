@@ -9,7 +9,7 @@ from django.utils.dateparse import parse_datetime
 from accounts.models import User
 from portal.models import Booking, CalendlyWebhookLog, ServicePlan
 from portal.services.accounts import link_guest_records_to_user
-from portal.services.notifications import notify_booking_confirmed
+from portal.services.notifications import notify_booking_confirmed_whatsapp
 
 logger = logging.getLogger(__name__)
 
@@ -84,11 +84,16 @@ def _handle_invitee_created(payload: dict) -> Booking:
 
     scheduled_at = _parse_scheduled_time(payload)
     event_uri = (payload.get("scheduled_event") or {}).get("uri", "")
+    event_name = (payload.get("scheduled_event") or {}).get("name") or ""
 
     patient = User.objects.filter(email__iexact=email).first()
 
-    plan = ServicePlan.objects.filter(slug="video-consultation").first()
-    plan_label = plan.name if plan else "Video Consultation — ₹500 (30 min)"
+    if "rehab" in event_name.lower() or "monthly" in event_name.lower():
+        plan = ServicePlan.objects.filter(slug="monthly-rehab").first()
+        plan_label = plan.name if plan else "Monthly Rehab Program — ₹3,000/month"
+    else:
+        plan = ServicePlan.objects.filter(slug="video-consultation").first()
+        plan_label = plan.name if plan else "Video Consultation — ₹500 (30 min)"
 
     booking, created = Booking.objects.update_or_create(
         calendly_invitee_uri=invitee_uri,
@@ -106,9 +111,23 @@ def _handle_invitee_created(payload: dict) -> Booking:
         },
     )
 
+    when = ""
+    if booking.scheduled_at:
+        when = booking.scheduled_at.strftime("%d %b %Y at %I:%M %p")
+
+    if phone or email:
+        notify_booking_confirmed_whatsapp(
+            name=name,
+            phone=phone,
+            email=email,
+            plan_label=booking.plan_label,
+            scheduled_when=when,
+            payment_pending=True,
+            patient=patient if patient and patient.is_active else None,
+        )
+
     if patient and patient.is_active:
         link_guest_records_to_user(patient)
-        notify_booking_confirmed(patient=patient, booking=booking)
 
     return booking
 

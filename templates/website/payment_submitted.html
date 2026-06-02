@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Payment Submitted{% endblock %}
+{% block title %}Payment Confirmed{% endblock %}
 
 {% block content %}
 <section class="page-section">
@@ -8,19 +8,20 @@
     <div class="success-icon-wrap">
       <i class="ti ti-circle-check"></i>
     </div>
-    <h1 style="font-size:1.75rem;color:var(--b900);margin-bottom:0.75rem;">Submitted to Dr. Aahana</h1>
+    <h1 style="font-size:1.75rem;color:var(--b900);margin-bottom:0.75rem;">Payment confirmed!</h1>
     <p style="color:var(--g600);line-height:1.7;margin-bottom:1.5rem;">
-      Your payment proof has been sent for verification. Dr. Aahana Gupta will review it,
-      confirm your slot, and send your patient portal login via email and WhatsApp — usually within a few hours.
+      Thank you. Your payment was successful and a confirmation has been sent to your
+      <strong>WhatsApp</strong> and email. Dr. Aahana Gupta will finalize your session details shortly.
     </p>
     <div class="note-box" style="text-align:left;margin-bottom:1.5rem;">
-      <i class="ti ti-clock"></i>
-      <p><strong>What happens next?</strong><br>
-      1. Dr. Aahana verifies your UPI payment<br>
-      2. Your session slot is finalized<br>
-      3. You receive portal login credentials</p>
+      <i class="ti ti-brand-whatsapp"></i>
+      <p><strong>What's next?</strong><br>
+      1. Check WhatsApp for your confirmation<br>
+      2. Use the patient portal link in your email to track progress<br>
+      3. Join your session at the scheduled Calendly time</p>
     </div>
-    <a href="{% url 'website:home' %}" class="btn btn-primary">Back to Home</a>
+    <a href="{% url 'accounts:login' %}" class="btn btn-primary" style="margin-right:0.5rem;">Patient Portal</a>
+    <a href="{% url 'website:home' %}" class="btn" style="background:var(--g50);color:var(--g800);">Back to Home</a>
   </div>
 </section>
 {% endblock %}

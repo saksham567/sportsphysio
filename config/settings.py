@@ -70,6 +70,9 @@ DATABASES = {
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
     )
 }
+# Render PostgreSQL — keep connections warm across requests
+if DATABASES["default"]["ENGINE"].endswith("postgresql"):
+    DATABASES["default"].setdefault("CONN_MAX_AGE", 600)
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -88,13 +91,14 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+# Use non-manifest storage — avoids 500s when collectstatic runs at a different DEBUG than runtime
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
         "BACKEND": (
-            "whitenoise.storage.CompressedManifestStaticFilesStorage"
+            "whitenoise.storage.CompressedStaticFilesStorage"
             if not DEBUG
             else "django.contrib.staticfiles.storage.StaticFilesStorage"
         ),
@@ -141,7 +145,19 @@ DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default=CONTACT_EMAIL)
 # Calendly webhook
 CALENDLY_WEBHOOK_SIGNING_KEY = env("CALENDLY_WEBHOOK_SIGNING_KEY", default="")
 
-# WhatsApp via Twilio (optional — logs wa.me link if not configured)
+# Razorpay
+RAZORPAY_KEY_ID = env("RAZORPAY_KEY_ID", default="")
+RAZORPAY_KEY_SECRET = env("RAZORPAY_KEY_SECRET", default="")
+RAZORPAY_WEBHOOK_SECRET = env("RAZORPAY_WEBHOOK_SECRET", default="")
+
+# WhatsApp click-to-chat number (country code, no +) e.g. 919876543210
+WHATSAPP_NUMBER = env("WHATSAPP_NUMBER", default="919675191210")
+WHATSAPP_PREFILL_MESSAGE = env(
+    "WHATSAPP_PREFILL_MESSAGE",
+    default="Hi Dr. Aahana, I'd like to know more about your physiotherapy services.",
+)
+
+# WhatsApp via Twilio (automated messages to patients)
 TWILIO_ACCOUNT_SID = env("TWILIO_ACCOUNT_SID", default="")
 TWILIO_AUTH_TOKEN = env("TWILIO_AUTH_TOKEN", default="")
 TWILIO_WHATSAPP_FROM = env("TWILIO_WHATSAPP_FROM", default="")
@@ -152,3 +168,7 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=True)
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
+    if not CSRF_TRUSTED_ORIGINS and SITE_URL.startswith("https://"):
+        CSRF_TRUSTED_ORIGINS = [SITE_URL.rstrip("/")]
